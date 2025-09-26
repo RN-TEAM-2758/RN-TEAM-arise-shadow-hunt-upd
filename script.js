@@ -584,7 +584,7 @@ local b1 = CriarBotao("potion Gold v1", function()
 game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("PotionMerge"):InvokeServer(unpack(args))
 end)
 
-local AutoMythicalToggle, AutoMythicalBox = CriarToggle("auto chapéu 1", function() end)
+local AutoMythicalToggle, AutoMythicalBox = CriarToggle("auto chapéu", function() end)
 
 local AutoMythicalChecked = false
 AutoMythicalToggle.MouseButton1Click:Connect(function()
@@ -609,7 +609,7 @@ game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Rerol
     end
 end)
 
-local AutoMythicalToggle, AutoMythicalBox = CriarToggle("auto mochila 6", function() end)
+local AutoMythicalToggle, AutoMythicalBox = CriarToggle("auto mochila", function() end)
 
 local AutoMythicalChecked = false
 AutoMythicalToggle.MouseButton1Click:Connect(function()
@@ -642,4 +642,4 @@ end)
 task.wait(0.1)
 ajustarAlturaJanela()
 
-print("🚀 INTERFACE RN TEAM CARREGADA!")ços
+print("🚀 INTERFACE RN TEAM CARREGADA!")
