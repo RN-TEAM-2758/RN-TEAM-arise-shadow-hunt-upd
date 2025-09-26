@@ -20,7 +20,7 @@ local startPos
 
 -- Janela principal
 local Frame = Instance.new("Frame")
-Frame.Size = UDim2.new(0, 250, 0, 220) -- Tamanho inicial
+Frame.Size = UDim2.new(0, 250, 0, 250) -- Tamanho inicial aumentado
 Frame.Position = UDim2.new(0.35, 0, 0.3, 0)
 Frame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
 Frame.BorderSizePixel = 0
@@ -135,8 +135,8 @@ end)
 
 -- Função para ajustar automaticamente a altura da janela
 local function ajustarAlturaJanela()
-    local alturaMinima = 220 -- Altura mínima da janela
-    local alturaMaxima = 400 -- Altura máxima da janela
+    local alturaMinima = 250 -- Altura mínima da janela aumentada
+    local alturaMaxima = 450 -- Altura máxima da janela aumentada
     local alturaConteudo = UIListLayout.AbsoluteContentSize.Y + 80 -- Conteúdo + margens
     
     -- Calcular nova altura (limitar entre mínimo e máximo)
@@ -393,6 +393,122 @@ local autoFarmSystem = {
     end
 }
 
+-- SISTEMA AUTO RAID V1
+local autoRaidSystem = {
+    active = false,
+    connection = nil,
+    
+    -- Configurações
+    SETTINGS = {
+        LOOP_DELAY = 35, -- Delay entre cada execução do evento
+        RAID_MAP_ID = 1000002 -- ID do mapa de raid V1
+    },
+    
+    -- Função principal do loop
+    mainLoop = function(self)
+        if not self.active then return end
+        
+        -- Executar o evento do raid V1
+        local args = {self.SETTINGS.RAID_MAP_ID}
+        pcall(function()
+            ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("EnterCityRaidMap"):FireServer(unpack(args))
+            print("⚔️ Auto Raid V1 executado! Map ID: " .. self.SETTINGS.RAID_MAP_ID)
+        end)
+    end,
+    
+    -- Iniciar o auto raid V1
+    start = function(self)
+        if self.active then return end
+        
+        self.active = true
+        
+        print("🟢 Auto Raid V1 INICIADO!")
+        print("Executando evento a cada " .. self.SETTINGS.LOOP_DELAY .. " segundos")
+        
+        -- Executar uma vez imediatamente ao iniciar
+        self:mainLoop()
+        
+        -- Criar loop usando RunService
+        self.connection = RunService.Heartbeat:Connect(function()
+            if not self.active then return end
+            pcall(function() self:mainLoop() end)
+            wait(self.SETTINGS.LOOP_DELAY)
+        end)
+    end,
+    
+    -- Parar o auto raid V1
+    stop = function(self)
+        if not self.active then return end
+        
+        self.active = false
+        
+        if self.connection then
+            self.connection:Disconnect()
+            self.connection = nil
+        end
+        
+        print("🔴 Auto Raid V1 PARADO!")
+    end
+}
+
+-- SISTEMA AUTO RAID V2
+local autoRaidV2System = {
+    active = false,
+    connection = nil,
+    
+    -- Configurações
+    SETTINGS = {
+        LOOP_DELAY = 35, -- Delay entre cada execução do evento
+        RAID_MAP_ID = 1000001 -- ID do mapa de raid V2 (diferente do V1)
+    },
+    
+    -- Função principal do loop
+    mainLoop = function(self)
+        if not self.active then return end
+        
+        -- Executar o evento do raid V2
+        local args = {self.SETTINGS.RAID_MAP_ID}
+        pcall(function()
+            ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("EnterCityRaidMap"):FireServer(unpack(args))
+            print("⚔️ Auto Raid V2 executado! Map ID: " .. self.SETTINGS.RAID_MAP_ID)
+        end)
+    end,
+    
+    -- Iniciar o auto raid V2
+    start = function(self)
+        if self.active then return end
+        
+        self.active = true
+        
+        print("🟢 Auto Raid V2 INICIADO!")
+        print("Executando evento a cada " .. self.SETTINGS.LOOP_DELAY .. " segundos")
+        
+        -- Executar uma vez imediatamente ao iniciar
+        self:mainLoop()
+        
+        -- Criar loop usando RunService
+        self.connection = RunService.Heartbeat:Connect(function()
+            if not self.active then return end
+            pcall(function() self:mainLoop() end)
+            wait(self.SETTINGS.LOOP_DELAY)
+        end)
+    end,
+    
+    -- Parar o auto raid V2
+    stop = function(self)
+        if not self.active then return end
+        
+        self.active = false
+        
+        if self.connection then
+            self.connection:Disconnect()
+            self.connection = nil
+        end
+        
+        print("🔴 Auto Raid V2 PARADO!")
+    end
+}
+
 -- Toggle Auto Farm
 local AutoFarmToggle, AutoFarmBox = CriarToggle("auto farm", function() end)
 
@@ -408,249 +524,122 @@ AutoFarmToggle.MouseButton1Click:Connect(function()
     end
 end)
 
--- SISTEMA AUTO RAID
-local autoRaidSystem = {
-    isPart1Active = false,
-    isPart2Active = false,
-    stopDetected = false,
-    seenMessages = {},
-    
-    -- CONFIGURAÇÕES
-    START_TEXT = "7,Demon Castle",
-    STOP_TEXT = "heroes are",
-    
-    -- Ação executada quando para (tanto pelo chat quanto pelo botão)
-    executeStopAction = function(self)
-        print("🛑 EXECUTANDO AÇÃO DE PARADA...")
-        
-        -- Aqui você pode adicionar qualquer ação que queira fazer quando parar
-        -- Por exemplo: teleportar de volta, fechar interfaces, etc.
-        
-        -- Exemplo: Teleportar para o spawn original
-        local args = {{mapId = 10001}} -- ID do mapa spawn padrão
-        ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("LocalPlayerTeleport"):FireServer(unpack(args))
-        
-        print("✅ Ação de parada concluída!")
-    end,
-    
-    -- Iniciar Parte 1 (Detector de Chat)
-    startPart1 = function(self)
-        print("🔍 PARTE 1 INICIADA - Esperando: '" .. self.START_TEXT .. "'")
-        self.isPart1Active = true
-        self.stopDetected = false
-        
-        while self.isPart1Active and not self.stopDetected do
-            task.wait(0.3)
-
-            -- Verificar se foi parado pelo botão
-            if not _G.autoRaid then
-                print("🛑 PARADO PELO BOTÃO - Executando ação de parada...")
-                self:executeStopAction()
-                break
-            end
-
-            for _, gui in pairs({CoreGui, LocalPlayer.PlayerGui}) do
-                for _, textLabel in pairs(gui:GetDescendants()) do
-                    if textLabel:IsA("TextLabel") and textLabel.Text ~= "" then
-                        local text = textLabel.Text
-
-                        if not self.seenMessages[text] then
-                            self.seenMessages[text] = true
-
-                            if string.find(text, self.START_TEXT) then
-                                print("✅ MENSAGEM DE INICIO: '" .. text .. "'")
-                                self.isPart1Active = false
-                                print("🔴 PARTE 1 DESLIGADA")
-                                self.isPart2Active = true
-                                self.stopDetected = false
-                                print("🟢 PARTE 2 INICIANDO")
-
-                                task.spawn(function()
-                                    print("🚀 Ativando teleport...")
-                                    local args1 = {{mapId = 50007}}
-                                    ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("LocalPlayerTeleport"):FireServer(unpack(args1))
-
-                                    print("⏳ Esperando 3 segundos para teleportar...")
-                                    task.wait(3)
-
-                                    if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
-                                        print("✅ Player teleportado, ativando raid map...")
-                                        local args2 = {1000002}
-                                        ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("EnterCityRaidMap"):FireServer(unpack(args2))
-
-                                        task.wait(2)
-                                        print("🎯 Iniciando NPC Gatherer...")
-                                        self:startPart2()
-                                    else
-                                        print("❌ Falha no teleport, reativando Parte 1")
-                                        self.isPart1Active = true
-                                        self.isPart2Active = false
-                                        self:startPart1()
-                                    end
-                                end)
-                                return
-                            end
-                        end
-                    end
-                end
-            end
-        end
-    end,
-    
-    -- Iniciar Parte 2 (NPC Gatherer)
-    startPart2 = function(self)
-        print("⚔️ PARTE 2 INICIADA - Modo NPC Gatherer")
-        print("📋 Escreva '" .. self.STOP_TEXT .. "' no chat para parar")
-
-        local SETTINGS = {
-            NPC_FOLDER_NAME = "Enemys",
-            MAX_DISTANCE = 900,
-            LOOP_DELAY = 1.0
-        }
-
-        local npcFolder = workspace:FindFirstChild(SETTINGS.NPC_FOLDER_NAME)
-        if not npcFolder then
-            print("❌ Pasta de NPCs não encontrada!")
-            self.isPart1Active = true
-            self.isPart2Active = false
-            self:startPart1()
-            return
-        end
-
-        local function checkForStopMessage()
-            for _, gui in pairs({CoreGui, LocalPlayer.PlayerGui}) do
-                for _, textLabel in pairs(gui:GetDescendants()) do
-                    if textLabel:IsA("TextLabel") and textLabel.Text ~= "" then
-                        local text = textLabel.Text
-                        if not self.seenMessages[text] then
-                            self.seenMessages[text] = true
-                            if string.find(text, self.STOP_TEXT) then
-                                print("🛑 MENSAGEM DE PARADA: '" .. text .. "'")
-                                self.stopDetected = true
-                                self:executeStopAction() -- Executar ação de parada
-                                return
-                            end
-                        end
-                    end
-                end
-            end
-        end
-
-        while self.isPart2Active and not self.stopDetected do
-            -- Verificar se foi parado pelo botão
-            if not _G.autoRaid then
-                print("🛑 PARADO PELO BOTÃO NA PARTE 2 - Executando ação de parada...")
-                self:executeStopAction()
-                break
-            end
-
-            checkForStopMessage()
-
-            local character = LocalPlayer.Character
-            local humanoidRootPart = character and character:FindFirstChild("HumanoidRootPart")
-            if not character or not humanoidRootPart then
-                print("⏳ Aguardando character...")
-                task.wait(1)
-                continue
-            end
-
-            if not workspace:FindFirstChild(SETTINGS.NPC_FOLDER_NAME) then
-                print("❌ Pasta de NPCs removida!")
-                break
-            end
-
-            print("⏳ Preparando para puxar NPCs...")
-            task.wait(3)
-
-            local gathered = 0
-            for _, npc in pairs(npcFolder:GetChildren()) do
-                if not self.isPart2Active or self.stopDetected or not _G.autoRaid then break end
-
-                if npc:IsA("Model") then
-                    local humanoid = npc:FindFirstChild("Humanoid")
-                    local npcHRP = npc:FindFirstChild("HumanoidRootPart")
-
-                    if humanoid and npcHRP and humanoid.Health > 0 then
-                        local distance = (humanoidRootPart.Position - npcHRP.Position).Magnitude
-                        if distance < SETTINGS.MAX_DISTANCE then
-                            npcHRP.CFrame = humanoidRootPart.CFrame * CFrame.new(math.random(-5,5), 0, math.random(-5,5))
-                            gathered += 1
-                        end
-                    end
-                end
-            end
-
-            if gathered > 0 then
-                print("👥 " .. gathered .. " NPCs puxados de uma vez!")
-            else
-                print("🔍 Nenhum NPC encontrado ativo")
-            end
-
-            task.wait(SETTINGS.LOOP_DELAY)
-        end
-
-        print("🔴 PARTE 2 PARADA")
-        self.isPart2Active = false
-        
-        -- Se não foi parado pelo botão, voltar para Parte 1
-        if _G.autoRaid and not self.stopDetected then
-            self.isPart1Active = true
-            self:startPart1()
-        else
-            self:executeStopAction() -- Executar ação de parada final
-        end
-    end,
-    
-    -- Parar sistema
-    stop = function(self)
-        self.isPart1Active = false
-        self.isPart2Active = false
-        self.stopDetected = true
-        self:executeStopAction() -- Executar ação de parada
-        print("🛑 SISTEMA AUTO RAID PARADO")
-    end
-}
-
--- Toggle Auto Raid
-local AutoRaidToggle, AutoRaidBox = CriarToggle("Auto Raid", function() end)
+-- Toggle Auto Raid V1
+local AutoRaidToggle, AutoRaidBox = CriarToggle("Auto Raid V1", function() end)
 
 AutoRaidToggle.MouseButton1Click:Connect(function()
-    _G.autoRaid = not _G.autoRaid
-    if _G.autoRaid then
-        AutoRaidBox.BackgroundColor3 = Color3.fromRGB(0, 200, 0)
-        print("🟢 Auto Raid ATIVADO")
-        autoRaidSystem:startPart1()
-    else
+    if autoRaidSystem.active then
+        -- Desligar
         AutoRaidBox.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-        print("🔴 Auto Raid DESATIVADO")
         autoRaidSystem:stop()
+    else
+        -- Ligar
+        AutoRaidBox.BackgroundColor3 = Color3.fromRGB(0, 200, 0)
+        autoRaidSystem:start()
     end
 end)
 
--- Ajustar automaticamente a altura da janela e a rolagem
+-- Toggle Auto Raid V2
+local AutoRaidV2Toggle, AutoRaidV2Box = CriarToggle("Auto Raid V2", function() end)
+
+AutoRaidV2Toggle.MouseButton1Click:Connect(function()
+    if autoRaidV2System.active then
+        -- Desligar
+        AutoRaidV2Box.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+        autoRaidV2System:stop()
+    else
+        -- Ligar
+        AutoRaidV2Box.BackgroundColor3 = Color3.fromRGB(0, 200, 0)
+        autoRaidV2System:start()
+    end
+end)
+
+local b1 = CriarBotao("potion luck v1", function()
+	local args = {
+	{
+		id = 10047,
+		count = 5
+	}
+}
+game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("PotionMerge"):InvokeServer(unpack(args))
+end)
+
+local b1 = CriarBotao("potion damage v1", function()
+	local args = {
+	{
+		id = 10048,
+		count = 5
+	}
+}
+game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("PotionMerge"):InvokeServer(unpack(args))
+end)
+
+local b1 = CriarBotao("potion Gold v1", function()
+	local args = {
+	{
+		id = 10049,
+		count = 5
+	}
+}
+game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("PotionMerge"):InvokeServer(unpack(args))
+end)
+
+local AutoMythicalToggle, AutoMythicalBox = CriarToggle("auto chapéu 1", function() end)
+
+local AutoMythicalChecked = false
+AutoMythicalToggle.MouseButton1Click:Connect(function()
+    AutoMythicalChecked = not AutoMythicalChecked
+    if AutoMythicalChecked then
+        AutoMythicalBox.BackgroundColor3 = Color3.fromRGB(0, 200, 0)
+        _G.auto = true
+        
+        -- Iniciar loop do Auto Mythical
+        task.spawn(function()
+            while _G.auto do
+                local args = {
+	400001
+}
+game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("RerollOrnament"):InvokeServer(unpack(args))
+                task.wait(0.2)
+            end
+        end)
+    else
+        AutoMythicalBox.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+        _G.auto = false
+    end
+end)
+
+local AutoMythicalToggle, AutoMythicalBox = CriarToggle("auto mochila 6", function() end)
+
+local AutoMythicalChecked = false
+AutoMythicalToggle.MouseButton1Click:Connect(function()
+    AutoMythicalChecked = not AutoMythicalChecked
+    if AutoMythicalChecked then
+        AutoMythicalBox.BackgroundColor3 = Color3.fromRGB(0, 200, 0)
+        _G.auto = true
+        
+        task.spawn(function()
+            while _G.auto do
+                local args = {
+	400002
+}
+game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("RerollOrnament"):InvokeServer(unpack(args))
+                task.wait(0.2)
+            end
+        end)
+    else
+        AutoMythicalBox.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+        _G.auto = false
+    end
+end)
+
 UIListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
     ContentContainer.CanvasSize = UDim2.new(0, 0, 0, UIListLayout.AbsoluteContentSize.Y)
     ajustarAlturaJanela() -- Ajusta a altura da janela automaticamente
-end)
-
-local b1 = CriarBotao("nada", function()
-	print("Steal Best Fish clicado")
-end)
-
-local b1 = CriarBotao("nada", function()
-	print("Steal Best Fish clicado")
-end)
-
-local b1 = CriarBotao("nada", function()
-	print("Steal Best Fish clicado")
-end)
-
-local b1 = CriarBotao("nada", function()
-	print("Steal Best Fish clicado")
 end)
 
 -- Ajustar altura inicial
 task.wait(0.1)
 ajustarAlturaJanela()
 
-print("🚀 INTERFACE RN TEAM CARREGADA!")
+print("🚀 INTERFACE RN TEAM CARREGADA!")ços
