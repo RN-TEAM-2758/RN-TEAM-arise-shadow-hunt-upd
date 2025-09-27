@@ -393,122 +393,6 @@ local autoFarmSystem = {
     end
 }
 
--- SISTEMA AUTO RAID V1
-local autoRaidSystem = {
-    active = false,
-    connection = nil,
-    
-    -- Configurações
-    SETTINGS = {
-        LOOP_DELAY = 80.0, -- 1 minuto e 20 segundos = 80 segundos
-        RAID_MAP_ID = 1000002 -- ID do mapa de raid
-    },
-    
-    -- Função principal do loop
-    mainLoop = function(self)
-        if not self.active then return end
-        
-        -- Executar o evento do raid V1
-        local args = {self.SETTINGS.RAID_MAP_ID}
-        pcall(function()
-            ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("EnterCityRaidMap"):FireServer(unpack(args))
-            print("⚔️ Auto Raid V1 executado! Map ID: " .. self.SETTINGS.RAID_MAP_ID)
-        end)
-    end,
-    
-    -- Iniciar o auto raid V1
-    start = function(self)
-        if self.active then return end
-        
-        self.active = true
-        
-        print("🟢 Auto Raid V1 INICIADO!")
-        print("Executando evento a cada " .. self.SETTINGS.LOOP_DELAY .. " segundos")
-        
-        -- Executar uma vez imediatamente ao iniciar
-        self:mainLoop()
-        
-        -- Criar loop usando RunService
-        self.connection = RunService.Heartbeat:Connect(function()
-            if not self.active then return end
-            pcall(function() self:mainLoop() end)
-            wait(self.SETTINGS.LOOP_DELAY)
-        end)
-    end,
-    
-    -- Parar o auto raid V1
-    stop = function(self)
-        if not self.active then return end
-        
-        self.active = false
-        
-        if self.connection then
-            self.connection:Disconnect()
-            self.connection = nil
-        end
-        
-        print("🔴 Auto Raid V1 PARADO!")
-    end
-}
-
--- SISTEMA AUTO RAID V2
-local autoRaidV2System = {
-    active = false,
-    connection = nil,
-    
-    -- Configurações
-    SETTINGS = {
-        LOOP_DELAY = 80.0, -- 1 minuto e 20 segundos = 80 segundos
-        RAID_MAP_ID = 1000001 -- ID do mapa de raid
-    },
-    
-    -- Função principal do loop
-    mainLoop = function(self)
-        if not self.active then return end
-        
-        -- Executar o evento do raid V2
-        local args = {self.SETTINGS.RAID_MAP_ID}
-        pcall(function()
-            ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("EnterCityRaidMap"):FireServer(unpack(args))
-            print("⚔️ Auto Raid V2 executado! Map ID: " .. self.SETTINGS.RAID_MAP_ID)
-        end)
-    end,
-    
-    -- Iniciar o auto raid V2
-    start = function(self)
-        if self.active then return end
-        
-        self.active = true
-        
-        print("🟢 Auto Raid V2 INICIADO!")
-        print("Executando evento a cada " .. self.SETTINGS.LOOP_DELAY .. " segundos")
-        
-        -- Executar uma vez imediatamente ao iniciar
-        self:mainLoop()
-        
-        -- Criar loop usando RunService
-        self.connection = RunService.Heartbeat:Connect(function()
-            if not self.active then return end
-            pcall(function() self:mainLoop() end)
-            wait(self.SETTINGS.LOOP_DELAY)
-        end)
-    end,
-    
-    -- Parar o auto raid V2
-    stop = function(self)
-        if not self.active then return end
-        
-        self.active = false
-        
-        if self.connection then
-            self.connection:Disconnect()
-            self.connection = nil
-        end
-        
-        print("🔴 Auto Raid V2 PARADO!")
-    end
-}
-
 -- Toggle Auto Farm
 local AutoFarmToggle, AutoFarmBox = CriarToggle("auto farm", function() end)
 
@@ -524,115 +408,137 @@ AutoFarmToggle.MouseButton1Click:Connect(function()
     end
 end)
 
--- Toggle Auto Raid V1
-local AutoRaidToggle, AutoRaidBox = CriarToggle("Auto Raid V1", function() end)
+-- Auto Raid World 3
+local AutoRaidWorld3Toggle, AutoRaidWorld3Box = CriarToggle("auto raid World 3", function() end)
 
-AutoRaidToggle.MouseButton1Click:Connect(function()
-    if autoRaidSystem.active then
-        -- Desligar
-        AutoRaidBox.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-        autoRaidSystem:stop()
+local AutoRaidWorld3Checked = false
+AutoRaidWorld3Toggle.MouseButton1Click:Connect(function()
+    AutoRaidWorld3Checked = not AutoRaidWorld3Checked
+    if AutoRaidWorld3Checked then
+        AutoRaidWorld3Box.BackgroundColor3 = Color3.fromRGB(0, 200, 0)
+        _G.autoRaidWorld3 = true
+        
+        -- Iniciar loop do Auto Raid World 3
+        task.spawn(function()
+            while _G.autoRaidWorld3 do
+                local args = {
+                    [1] = 1000001
+                }
+                game:GetService("ReplicatedStorage").Remotes.EnterCityRaidMap:FireServer(unpack(args))
+                task.wait(80.0)
+            end
+        end)
     else
-        -- Ligar
-        AutoRaidBox.BackgroundColor3 = Color3.fromRGB(0, 200, 0)
-        autoRaidSystem:start()
+        AutoRaidWorld3Box.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+        _G.autoRaidWorld3 = false
     end
 end)
 
--- Toggle Auto Raid V2
-local AutoRaidV2Toggle, AutoRaidV2Box = CriarToggle("Auto Raid V2", function() end)
+-- Auto Raid World 7
+local AutoRaidWorld7Toggle, AutoRaidWorld7Box = CriarToggle("auto raid World 7", function() end)
 
-AutoRaidV2Toggle.MouseButton1Click:Connect(function()
-    if autoRaidV2System.active then
-        -- Desligar
-        AutoRaidV2Box.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-        autoRaidV2System:stop()
+local AutoRaidWorld7Checked = false
+AutoRaidWorld7Toggle.MouseButton1Click:Connect(function()
+    AutoRaidWorld7Checked = not AutoRaidWorld7Checked
+    if AutoRaidWorld7Checked then
+        AutoRaidWorld7Box.BackgroundColor3 = Color3.fromRGB(0, 200, 0)
+        _G.autoRaidWorld7 = true
+        
+        -- Iniciar loop do Auto Raid World 7
+        task.spawn(function()
+            while _G.autoRaidWorld7 do
+                local args = {
+                    [1] = 1000002
+                }
+                game:GetService("ReplicatedStorage").Remotes.EnterCityRaidMap:FireServer(unpack(args))
+                task.wait(80.0)
+            end
+        end)
     else
-        -- Ligar
-        AutoRaidV2Box.BackgroundColor3 = Color3.fromRGB(0, 200, 0)
-        autoRaidV2System:start()
+        AutoRaidWorld7Box.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+        _G.autoRaidWorld7 = false
     end
 end)
 
+-- Botões de Potion
 local b1 = CriarBotao("potion luck v1", function()
-	local args = {
-	{
-		id = 10047,
-		count = 5
-	}
-}
-game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("PotionMerge"):InvokeServer(unpack(args))
+    local args = {
+        {
+            id = 10047,
+            count = 5
+        }
+    }
+    game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("PotionMerge"):InvokeServer(unpack(args))
 end)
 
-local b1 = CriarBotao("potion damage v1", function()
-	local args = {
-	{
-		id = 10048,
-		count = 5
-	}
-}
-game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("PotionMerge"):InvokeServer(unpack(args))
+local b2 = CriarBotao("potion damage v1", function()
+    local args = {
+        {
+            id = 10048,
+            count = 5
+        }
+    }
+    game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("PotionMerge"):InvokeServer(unpack(args))
 end)
 
-local b1 = CriarBotao("potion Gold v1", function()
-	local args = {
-	{
-		id = 10049,
-		count = 5
-	}
-}
-game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("PotionMerge"):InvokeServer(unpack(args))
+local b3 = CriarBotao("potion Gold v1", function()
+    local args = {
+        {
+            id = 10049,
+            count = 5
+        }
+    }
+    game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("PotionMerge"):InvokeServer(unpack(args))
 end)
 
-local AutoMythicalToggle, AutoMythicalBox = CriarToggle("auto chapéu", function() end)
+-- Auto Chapéu
+local AutoChapeuToggle, AutoChapeuBox = CriarToggle("auto chapéu", function() end)
 
-local AutoMythicalChecked = false
-AutoMythicalToggle.MouseButton1Click:Connect(function()
-    AutoMythicalChecked = not AutoMythicalChecked
-    if AutoMythicalChecked then
-        AutoMythicalBox.BackgroundColor3 = Color3.fromRGB(0, 200, 0)
-        _G.auto = true
+local AutoChapeuChecked = false
+AutoChapeuToggle.MouseButton1Click:Connect(function()
+    AutoChapeuChecked = not AutoChapeuChecked
+    if AutoChapeuChecked then
+        AutoChapeuBox.BackgroundColor3 = Color3.fromRGB(0, 200, 0)
+        _G.autoChapeu = true
         
-        -- Iniciar loop do Auto Mythical
+        -- Iniciar loop do Auto Chapéu
         task.spawn(function()
-            while _G.auto do
-                local args = {
-	400001
-}
-game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("RerollOrnament"):InvokeServer(unpack(args))
+            while _G.autoChapeu do
+                local args = {400001}
+                game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("RerollOrnament"):InvokeServer(unpack(args))
                 task.wait(0.2)
             end
         end)
     else
-        AutoMythicalBox.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-        _G.auto = false
+        AutoChapeuBox.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+        _G.autoChapeu = false
     end
 end)
 
-local AutoMythicalToggle, AutoMythicalBox = CriarToggle("auto mochila", function() end)
+-- Auto Mochila
+local AutoMochilaToggle, AutoMochilaBox = CriarToggle("auto mochila", function() end)
 
-local AutoMythicalChecked = false
-AutoMythicalToggle.MouseButton1Click:Connect(function()
-    AutoMythicalChecked = not AutoMythicalChecked
-    if AutoMythicalChecked then
-        AutoMythicalBox.BackgroundColor3 = Color3.fromRGB(0, 200, 0)
-        _G.auto = true
+local AutoMochilaChecked = false
+AutoMochilaToggle.MouseButton1Click:Connect(function()
+    AutoMochilaChecked = not AutoMochilaChecked
+    if AutoMochilaChecked then
+        AutoMochilaBox.BackgroundColor3 = Color3.fromRGB(0, 200, 0)
+        _G.autoMochila = true
         
         task.spawn(function()
-            while _G.auto do
-                local args = {
-	400002
-}
-game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("RerollOrnament"):InvokeServer(unpack(args))
+            while _G.autoMochila do
+                local args = {400002}
+                game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("RerollOrnament"):InvokeServer(unpack(args))
                 task.wait(0.2)
             end
         end)
     else
-        AutoMythicalBox.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-        _G.auto = false
+        AutoMochilaBox.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+        _G.autoMochila = false
     end
 end)
 
+-- Ajustar automaticamente a altura da janela e a rolagem
 UIListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
     ContentContainer.CanvasSize = UDim2.new(0, 0, 0, UIListLayout.AbsoluteContentSize.Y)
     ajustarAlturaJanela() -- Ajusta a altura da janela automaticamente
@@ -643,4 +549,3 @@ task.wait(0.1)
 ajustarAlturaJanela()
 
 print("🚀 INTERFACE RN TEAM CARREGADA!")
-
