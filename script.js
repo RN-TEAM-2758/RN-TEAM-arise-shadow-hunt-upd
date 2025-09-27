@@ -400,8 +400,8 @@ local autoRaidSystem = {
     
     -- Configurações
     SETTINGS = {
-        LOOP_DELAY = 35, -- Delay entre cada execução do evento
-        RAID_MAP_ID = 1000002 -- ID do mapa de raid V1
+        LOOP_DELAY = 80.0, -- 1 minuto e 20 segundos = 80 segundos
+        RAID_MAP_ID = 1000002 -- ID do mapa de raid
     },
     
     -- Função principal do loop
@@ -458,8 +458,8 @@ local autoRaidV2System = {
     
     -- Configurações
     SETTINGS = {
-        LOOP_DELAY = 35, -- Delay entre cada execução do evento
-        RAID_MAP_ID = 1000001 -- ID do mapa de raid V2 (diferente do V1)
+        LOOP_DELAY = 80.0, -- 1 minuto e 20 segundos = 80 segundos
+        RAID_MAP_ID = 1000001 -- ID do mapa de raid
     },
     
     -- Função principal do loop
@@ -643,3 +643,4 @@ task.wait(0.1)
 ajustarAlturaJanela()
 
 print("🚀 INTERFACE RN TEAM CARREGADA!")
+
