@@ -393,6 +393,54 @@ local autoFarmSystem = {
     end
 }
 
+-- Toggle Auto Raid World 3
+local AutoRaidW3Toggle, AutoRaidW3Box = CriarToggle("auto raid World 3", function() end)
+
+AutoRaidW3Toggle.MouseButton1Click:Connect(function()
+    if _G.autoRaidW3 then
+        -- Desligar
+        AutoRaidW3Box.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+        _G.autoRaidW3 = false
+    else
+        -- Ligar
+        AutoRaidW3Box.BackgroundColor3 = Color3.fromRGB(0, 200, 0)
+        _G.autoRaidW3 = true
+        
+        -- Iniciar loop do Auto Raid World 3
+        task.spawn(function()
+            while _G.autoRaidW3 do
+                local args = {[1] = 1000001}
+                game:GetService("ReplicatedStorage").Remotes.EnterCityRaidMap:FireServer(unpack(args))
+                task.wait(80.0)
+            end
+        end)
+    end
+end)
+
+-- Toggle Auto Raid World 7
+local AutoRaidW7Toggle, AutoRaidW7Box = CriarToggle("auto raid World 7", function() end)
+
+AutoRaidW7Toggle.MouseButton1Click:Connect(function()
+    if _G.autoRaidW7 then
+        -- Desligar
+        AutoRaidW7Box.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+        _G.autoRaidW7 = false
+    else
+        -- Ligar
+        AutoRaidW7Box.BackgroundColor3 = Color3.fromRGB(0, 200, 0)
+        _G.autoRaidW7 = true
+        
+        -- Iniciar loop do Auto Raid World 7
+        task.spawn(function()
+            while _G.autoRaidW7 do
+                local args = {[1] = 1000002}
+                game:GetService("ReplicatedStorage").Remotes.EnterCityRaidMap:FireServer(unpack(args))
+                task.wait(80.0)
+            end
+        end)
+    end
+end)
+
 -- Toggle Auto Farm
 local AutoFarmToggle, AutoFarmBox = CriarToggle("auto farm", function() end)
 
@@ -408,55 +456,50 @@ AutoFarmToggle.MouseButton1Click:Connect(function()
     end
 end)
 
--- Auto Raid World 3
-local AutoRaidWorld3Toggle, AutoRaidWorld3Box = CriarToggle("auto raid World 3", function() end)
+-- Toggle Auto Chapéu
+local AutoChapeuToggle, AutoChapeuBox = CriarToggle("auto chapéu", function() end)
 
-local AutoRaidWorld3Checked = false
-AutoRaidWorld3Toggle.MouseButton1Click:Connect(function()
-    AutoRaidWorld3Checked = not AutoRaidWorld3Checked
-    if AutoRaidWorld3Checked then
-        AutoRaidWorld3Box.BackgroundColor3 = Color3.fromRGB(0, 200, 0)
-        _G.autoRaidWorld3 = true
+AutoChapeuToggle.MouseButton1Click:Connect(function()
+    if _G.autoChapeu then
+        -- Desligar
+        AutoChapeuBox.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+        _G.autoChapeu = false
+    else
+        -- Ligar
+        AutoChapeuBox.BackgroundColor3 = Color3.fromRGB(0, 200, 0)
+        _G.autoChapeu = true
         
-        -- Iniciar loop do Auto Raid World 3
+        -- Iniciar loop do Auto Chapéu
         task.spawn(function()
-            while _G.autoRaidWorld3 do
-                local args = {
-                    [1] = 1000001
-                }
-                game:GetService("ReplicatedStorage").Remotes.EnterCityRaidMap:FireServer(unpack(args))
-                task.wait(80.0)
+            while _G.autoChapeu do
+                local args = {400001}
+                game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("RerollOrnament"):InvokeServer(unpack(args))
+                task.wait(0.2)
             end
         end)
-    else
-        AutoRaidWorld3Box.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-        _G.autoRaidWorld3 = false
     end
 end)
 
--- Auto Raid World 7
-local AutoRaidWorld7Toggle, AutoRaidWorld7Box = CriarToggle("auto raid World 7", function() end)
+-- Toggle Auto Mochila
+local AutoMochilaToggle, AutoMochilaBox = CriarToggle("auto mochila", function() end)
 
-local AutoRaidWorld7Checked = false
-AutoRaidWorld7Toggle.MouseButton1Click:Connect(function()
-    AutoRaidWorld7Checked = not AutoRaidWorld7Checked
-    if AutoRaidWorld7Checked then
-        AutoRaidWorld7Box.BackgroundColor3 = Color3.fromRGB(0, 200, 0)
-        _G.autoRaidWorld7 = true
+AutoMochilaToggle.MouseButton1Click:Connect(function()
+    if _G.autoMochila then
+        -- Desligar
+        AutoMochilaBox.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+        _G.autoMochila = false
+    else
+        -- Ligar
+        AutoMochilaBox.BackgroundColor3 = Color3.fromRGB(0, 200, 0)
+        _G.autoMochila = true
         
-        -- Iniciar loop do Auto Raid World 7
         task.spawn(function()
-            while _G.autoRaidWorld7 do
-                local args = {
-                    [1] = 1000002
-                }
-                game:GetService("ReplicatedStorage").Remotes.EnterCityRaidMap:FireServer(unpack(args))
-                task.wait(80.0)
+            while _G.autoMochila do
+                local args = {400002}
+                game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("RerollOrnament"):InvokeServer(unpack(args))
+                task.wait(0.2)
             end
         end)
-    else
-        AutoRaidWorld7Box.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-        _G.autoRaidWorld7 = false
     end
 end)
 
@@ -491,54 +534,191 @@ local b3 = CriarBotao("potion Gold v1", function()
     game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("PotionMerge"):InvokeServer(unpack(args))
 end)
 
--- Auto Chapéu
-local AutoChapeuToggle, AutoChapeuBox = CriarToggle("auto chapéu", function() end)
+local b2 = CriarBotao("auto click beta", function()
+    _G.auto = true
 
-local AutoChapeuChecked = false
-AutoChapeuToggle.MouseButton1Click:Connect(function()
-    AutoChapeuChecked = not AutoChapeuChecked
-    if AutoChapeuChecked then
-        AutoChapeuBox.BackgroundColor3 = Color3.fromRGB(0, 200, 0)
-        _G.autoChapeu = true
-        
-        -- Iniciar loop do Auto Chapéu
-        task.spawn(function()
-            while _G.autoChapeu do
-                local args = {400001}
-                game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("RerollOrnament"):InvokeServer(unpack(args))
-                task.wait(0.2)
+while _G.auto do
+local args = {
+	{
+		attackEnemyGUID = "3b887f80-7ae5-42ad-8915-73f94f2c87e1"
+	}
+}
+game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("PlayerClickAttackSkill"):FireServer(unpack(args))
+    wait(-999999)
+end
+end)
+
+-- Caixa de Walk Speed com limite de 120
+local WalkContainer = Instance.new("Frame")
+WalkContainer.Size = UDim2.new(1, 0, 0, 30)
+WalkContainer.BackgroundTransparency = 1
+WalkContainer.ZIndex = 1
+WalkContainer.Parent = ContentContainer
+
+local WalkLabel = Instance.new("TextLabel")
+WalkLabel.Size = UDim2.new(0.6, 0, 1, 0)
+WalkLabel.BackgroundTransparency = 1
+WalkLabel.Text = "Walk Speed"
+WalkLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+WalkLabel.Font = Enum.Font.SourceSansBold
+WalkLabel.TextSize = 18
+WalkLabel.TextXAlignment = Enum.TextXAlignment.Left
+WalkLabel.ZIndex = 1
+WalkLabel.Parent = WalkContainer
+
+local WalkBox = Instance.new("TextBox")
+WalkBox.Size = UDim2.new(0.3, 0, 1, 0)
+WalkBox.Position = UDim2.new(0.65, 0, 0, 0)
+WalkBox.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+WalkBox.BorderSizePixel = 0
+WalkBox.Text = "16"
+WalkBox.PlaceholderText = "0-120"
+WalkBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+WalkBox.Font = Enum.Font.SourceSansBold
+WalkBox.TextSize = 16
+WalkBox.ZIndex = 1
+WalkBox.Parent = WalkContainer
+Instance.new("UICorner", WalkBox).CornerRadius = UDim.new(0, 6)
+
+-- Efeitos visuais na TextBox
+WalkBox.Focused:Connect(function()
+    local tween = TweenService:Create(
+        WalkBox,
+        TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+        {BackgroundColor3 = Color3.fromRGB(80, 80, 80)}
+    )
+    tween:Play()
+end)
+
+WalkBox.FocusLost:Connect(function()
+    local tween = TweenService:Create(
+        WalkBox,
+        TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+        {BackgroundColor3 = Color3.fromRGB(60, 60, 60)}
+    )
+    tween:Play()
+    
+    local val = tonumber(WalkBox.Text)
+    if val then
+        if val >= 0 and val <= 120 then
+            -- Aplica a velocidade no personagem
+            local character = LocalPlayer.Character
+            if character and character:FindFirstChild("Humanoid") then
+                character.Humanoid.WalkSpeed = val
+                print("🟢 Walk Speed: " .. val)
             end
-        end)
+        else
+            WalkBox.Text = "16"
+            -- Restaura velocidade padrão
+            local character = LocalPlayer.Character
+            if character and character:FindFirstChild("Humanoid") then
+                character.Humanoid.WalkSpeed = 16
+            end
+        end
     else
-        AutoChapeuBox.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-        _G.autoChapeu = false
+        WalkBox.Text = "16"
     end
 end)
 
--- Auto Mochila
-local AutoMochilaToggle, AutoMochilaBox = CriarToggle("auto mochila", function() end)
+-- Sistema de Hitbox Size com limite de 60
+local HitboxContainer = Instance.new("Frame")
+HitboxContainer.Size = UDim2.new(1, 0, 0, 30)
+HitboxContainer.BackgroundTransparency = 1
+HitboxContainer.ZIndex = 1
+HitboxContainer.Parent = ContentContainer
 
-local AutoMochilaChecked = false
-AutoMochilaToggle.MouseButton1Click:Connect(function()
-    AutoMochilaChecked = not AutoMochilaChecked
-    if AutoMochilaChecked then
-        AutoMochilaBox.BackgroundColor3 = Color3.fromRGB(0, 200, 0)
-        _G.autoMochila = true
-        
-        task.spawn(function()
-            while _G.autoMochila do
-                local args = {400002}
-                game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("RerollOrnament"):InvokeServer(unpack(args))
-                task.wait(0.2)
-            end
-        end)
+local HitboxLabel = Instance.new("TextLabel")
+HitboxLabel.Size = UDim2.new(0.6, 0, 1, 0)
+HitboxLabel.BackgroundTransparency = 1
+HitboxLabel.Text = "kill aura"
+HitboxLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+HitboxLabel.Font = Enum.Font.SourceSansBold
+HitboxLabel.TextSize = 18
+HitboxLabel.TextXAlignment = Enum.TextXAlignment.Left
+HitboxLabel.ZIndex = 1
+HitboxLabel.Parent = HitboxContainer
+
+local HitboxBox = Instance.new("TextBox")
+HitboxBox.Size = UDim2.new(0.3, 0, 1, 0)
+HitboxBox.Position = UDim2.new(0.65, 0, 0, 0)
+HitboxBox.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+HitboxBox.BorderSizePixel = 0
+HitboxBox.Text = "20"
+HitboxBox.PlaceholderText = "0-60"
+HitboxBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+HitboxBox.Font = Enum.Font.SourceSansBold
+HitboxBox.TextSize = 16
+HitboxBox.ZIndex = 1
+HitboxBox.Parent = HitboxContainer
+Instance.new("UICorner", HitboxBox).CornerRadius = UDim.new(0, 6)
+
+-- Efeitos visuais na HitboxBox
+HitboxBox.Focused:Connect(function()
+    local tween = TweenService:Create(
+        HitboxBox,
+        TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+        {BackgroundColor3 = Color3.fromRGB(80, 80, 80)}
+    )
+    tween:Play()
+end)
+
+HitboxBox.FocusLost:Connect(function()
+    local tween = TweenService:Create(
+        HitboxBox,
+        TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+        {BackgroundColor3 = Color3.fromRGB(60, 60, 60)}
+    )
+    tween:Play()
+    
+    local val = tonumber(HitboxBox.Text)
+    if val then
+        if val == 0 then
+            print("🔴 Hitbox Size DESATIVADO")
+            _G.HitboxEnabled = false
+        elseif val > 0 and val <= 60 then
+            _G.HitboxSize = val
+            _G.HitboxEnabled = true
+            print("🟢 Hitbox Size: " .. val)
+        else
+            HitboxBox.Text = "20"
+            _G.HitboxSize = 20
+        end
     else
-        AutoMochilaBox.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-        _G.autoMochila = false
+        HitboxBox.Text = "20"
+        _G.HitboxSize = 20
     end
 end)
 
--- Ajustar automaticamente a altura da janela e a rolagem
+-- Configurações do sistema de Hitbox
+_G.HitboxSize = 20
+_G.HitboxEnabled = true
+_G.NPCFolder = workspace.Enemys -- Pasta onde os NPCs estão
+
+-- Função para modificar a HumanoidRootPart dos NPCs (apenas tamanho)
+local function modifyNPCs()
+    for _, npc in pairs(_G.NPCFolder:GetChildren()) do
+        if npc:IsA("Model") and npc:FindFirstChild("HumanoidRootPart") then
+            pcall(function()
+                if _G.HitboxEnabled then
+                    npc.HumanoidRootPart.Size = Vector3.new(_G.HitboxSize, _G.HitboxSize, _G.HitboxSize)
+                    npc.HumanoidRootPart.CanCollide = false
+                else
+                    -- Restaura o tamanho original quando desativado
+                    npc.HumanoidRootPart.Size = Vector3.new(2, 2, 1)
+                    npc.HumanoidRootPart.CanCollide = true
+                end
+            end)
+        end
+    end
+end
+
+-- Loop para modificar os NPCs continuamente
+game:GetService('RunService').RenderStepped:Connect(function()
+    pcall(function()
+        modifyNPCs()
+    end)
+end)
+
 UIListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
     ContentContainer.CanvasSize = UDim2.new(0, 0, 0, UIListLayout.AbsoluteContentSize.Y)
     ajustarAlturaJanela() -- Ajusta a altura da janela automaticamente
