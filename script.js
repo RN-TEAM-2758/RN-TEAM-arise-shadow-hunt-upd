@@ -643,8 +643,8 @@ HitboxBox.Size = UDim2.new(0.3, 0, 1, 0)
 HitboxBox.Position = UDim2.new(0.65, 0, 0, 0)
 HitboxBox.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
 HitboxBox.BorderSizePixel = 0
-HitboxBox.Text = "20"
-HitboxBox.PlaceholderText = "0-60"
+HitboxBox.Text = "0"
+HitboxBox.PlaceholderText = "0-2000"
 HitboxBox.TextColor3 = Color3.fromRGB(255, 255, 255)
 HitboxBox.Font = Enum.Font.SourceSansBold
 HitboxBox.TextSize = 16
@@ -675,22 +675,22 @@ HitboxBox.FocusLost:Connect(function()
         if val == 0 then
             print("🔴 Hitbox Size DESATIVADO")
             _G.HitboxEnabled = false
-        elseif val > 0 and val <= 60 then
+        elseif val > 0 and val <= 2000 then
             _G.HitboxSize = val
             _G.HitboxEnabled = true
             print("🟢 Hitbox Size: " .. val)
         else
-            HitboxBox.Text = "20"
-            _G.HitboxSize = 20
+            HitboxBox.Text = "0"
+            _G.HitboxSize = 0
         end
     else
-        HitboxBox.Text = "20"
-        _G.HitboxSize = 20
+        HitboxBox.Text = "0"
+        _G.HitboxSize = 0
     end
 end)
 
 -- Configurações do sistema de Hitbox
-_G.HitboxSize = 20
+_G.HitboxSize = 0
 _G.HitboxEnabled = true
 _G.NPCFolder = workspace.Enemys -- Pasta onde os NPCs estão
 
@@ -729,3 +729,4 @@ task.wait(0.1)
 ajustarAlturaJanela()
 
 print("🚀 INTERFACE RN TEAM CARREGADA!")
+
