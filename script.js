@@ -558,7 +558,7 @@ WalkContainer.Parent = ContentContainer
 local WalkLabel = Instance.new("TextLabel")
 WalkLabel.Size = UDim2.new(0.6, 0, 1, 0)
 WalkLabel.BackgroundTransparency = 1
-WalkLabel.Text = "Walk Speed"
+WalkLabel.Text = "speed"
 WalkLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 WalkLabel.Font = Enum.Font.SourceSansBold
 WalkLabel.TextSize = 18
@@ -729,5 +729,6 @@ task.wait(0.1)
 ajustarAlturaJanela()
 
 print("🚀 INTERFACE RN TEAM CARREGADA!")
+
 
 
