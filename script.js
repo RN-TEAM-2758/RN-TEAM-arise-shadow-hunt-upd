@@ -874,7 +874,7 @@ local function setupPlayerTab()
         end)
     end)
 
-local noclipBtn = CriarBotao("Noclip", function()
+local noclipBtn = CriarBotao("Ativar_Noclip", function()
     pcall(function()
         -- Script de Noclip Automático
         local Player = game.Players.LocalPlayer
@@ -978,3 +978,4 @@ _G.HitboxEnabled = true
 
 print("🚀 INTERFACE RN TEAM CARREGADA!")
 print("✅ Sistema de Hitbox/Kill Aura funcionando perfeitamente!")
+
