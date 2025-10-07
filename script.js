@@ -783,7 +783,7 @@ local function setupPlayerTab()
     local HitboxLabel = Instance.new("TextLabel")
     HitboxLabel.Size = UDim2.new(0.6, 0, 1, 0)
     HitboxLabel.BackgroundTransparency = 1
-    HitboxLabel.Text = "Kill Aura"
+    HitboxLabel.Text = "kill aura"
     HitboxLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
     HitboxLabel.Font = Enum.Font.SourceSansBold
     HitboxLabel.TextSize = 16
@@ -873,6 +873,48 @@ local function setupPlayerTab()
             modifyNPCs()
         end)
     end)
+
+local noclipBtn = CriarBotao("Noclip", function()
+    pcall(function()
+        -- Script de Noclip Automático
+        local Player = game.Players.LocalPlayer
+        local Character = Player.Character or Player.CharacterAdded:Wait()
+
+        -- Esperar o personagem spawnar
+        if not Character then
+            Character = Player.CharacterAdded:Wait()
+        end
+
+        -- Função para ativar noclip
+        local function EnableNoclip()
+            print("Noclip ATIVADO automaticamente!")
+            
+            -- Conexão permanente para noclip
+            local noclipConnection
+            noclipConnection = game:GetService("RunService").Stepped:Connect(function()
+                if Character and Character:FindFirstChild("Humanoid") then
+                    for _, part in pairs(Character:GetDescendants()) do
+                        if part:IsA("BasePart") then
+                            part.CanCollide = false
+                        end
+                    end
+                else
+                    -- Se o personagem morrer, reconectar quando renascer
+                    noclipConnection:Disconnect()
+                    wait(2)
+                    Character = Player.CharacterAdded:Wait()
+                    EnableNoclip()
+                end
+            end)
+        end
+
+        -- Ativar noclip imediatamente
+        EnableNoclip()
+
+        -- Mensagem de confirmação
+        print("Noclip está ativo! Você pode atravessar paredes.")
+    end)
+end, tabs["Player"].content)
 end
 
 -- Criar as abas
