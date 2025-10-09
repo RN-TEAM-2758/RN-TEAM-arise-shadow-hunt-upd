@@ -534,7 +534,7 @@ local function setupFarmTab()
                         }
                         game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("PlayerClickAttackSkill"):FireServer(unpack(args))
                     end)
-                    task.wait(-9999999)
+                    wait(-999999999999)
                 end
             end)
         else
@@ -982,3 +982,4 @@ _G.HitboxEnabled = true
 
 print("🚀 INTERFACE RN TEAM CARREGADA!")
 print("✅ Sistema de Hitbox/Kill Aura funcionando perfeitamente!")
+
