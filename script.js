@@ -344,7 +344,7 @@ local function setupMainTab()
                         local args = {400001}
                         game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("RerollOrnament"):InvokeServer(unpack(args))
                     end)
-                    task.wait(0.2)
+                    wait(-9999)
                 end
             end)
         else
@@ -364,7 +364,7 @@ local function setupMainTab()
                         local args = {400002}
                         game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("RerollOrnament"):InvokeServer(unpack(args))
                     end)
-                    task.wait(0.2)
+                    wait(-9999)
                 end
             end)
         else
@@ -982,4 +982,5 @@ _G.HitboxEnabled = true
 
 print("🚀 INTERFACE RN TEAM CARREGADA!")
 print("✅ Sistema de Hitbox/Kill Aura funcionando perfeitamente!")
+
 
